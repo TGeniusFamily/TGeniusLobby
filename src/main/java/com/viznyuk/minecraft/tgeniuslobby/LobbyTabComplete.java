@@ -61,6 +61,7 @@ public class LobbyTabComplete implements TabCompleter {
                 assert core != null;
                 for (MultiverseWorld world : core.getMVWorldManager().getMVWorlds()) {
                     list.add(world.getName());
+
                 }
             }
 
