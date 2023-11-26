@@ -1,0 +1,29 @@
+name: TGeniusLobby
+version: '${project.version}'
+main: com.viznyuk.minecraft.tgeniuslobby.TGeniusLobby
+api-version: '1.20'
+commands:
+  lobby:
+    description: Your description
+    usage: /lobby {option} {option}
+    permission:
+      tgeniuslobby.lobby
+    aliases: [ hub, spawn ]
+
+
+permissions:
+  tgeniuslobby.*:
+    description: Full access
+    children:
+      tgeniuslobby.lobby.self: true
+      tgeniuslobby.lobby.others: true
+      tgeniuslobby.lobby.kill_in_kd: false
+      tgeniuslobby.lobby.set_lobby: true
+      tgeniuslobby.lobby.bypass_autoteleport: false
+
+  tgeniuslobby.lobby.self:
+    description: You can /lobby only yourself
+  tgeniuslobby.lobby.others:
+    description: You can /lobby everybody yoo wand
+  tgeniuslobby.lobby.kill_in_kd:
+    description: Kill you if you
