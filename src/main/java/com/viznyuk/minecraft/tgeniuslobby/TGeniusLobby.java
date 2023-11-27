@@ -1,6 +1,10 @@
 package com.viznyuk.minecraft.tgeniuslobby;
 
+import com.github.sirblobman.combatlogx.api.ICombatLogX;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -8,6 +12,13 @@ import java.util.ArrayList;
 public final class TGeniusLobby extends JavaPlugin {
 
     public String lobby_world;
+
+    public ICombatLogX getICombatLogXAPI() {
+        PluginManager pluginManager = Bukkit.getPluginManager();
+        Plugin plugin = pluginManager.getPlugin("CombatLogX");
+        if (plugin == null) return null;
+        return (ICombatLogX) plugin;
+    }
     @Override
     public void onEnable() {
         // Plugin startup logic
@@ -16,6 +27,7 @@ public final class TGeniusLobby extends JavaPlugin {
 
 //
         ArrayList<String> aliaces = new ArrayList<>();
+
 
         aliaces.add("hub");
         aliaces.add("spawn");

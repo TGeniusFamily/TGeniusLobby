@@ -1,6 +1,7 @@
 package com.viznyuk.minecraft.tgeniuslobby;
 
 
+import com.github.sirblobman.combatlogx.api.ICombatLogX;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.bukkit.Bukkit;
@@ -14,9 +15,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class Lobby implements CommandExecutor {
     TGeniusLobby plugin;
+    ICombatLogX combatLogX;
+
 
     Lobby(TGeniusLobby plugin) {
         this.plugin = plugin;
+        combatLogX = plugin.getICombatLogXAPI();
     }
 
     @Override
@@ -25,8 +29,16 @@ public class Lobby implements CommandExecutor {
         assert core != null;
         Location loc = core.getMVWorldManager().getMVWorld(plugin.lobby_world).getSpawnLocation();
         if (strings.length == 0 & commandSender instanceof Player){
-
             Player p = (Player) commandSender;
+            if (combatLogX != null) {
+                if (!p.hasPermission("usage_while_in_combat") &
+                        (combatLogX.getCombatManager().isInCombat(p))
+                ) {
+                    commandSender.sendMessage("§4Вы не можете использовать /lobby пока находитесь в комбе!");
+                    return true;
+                }
+            }
+
             p.teleport(loc);
             commandSender.sendMessage("§6Бум! И вы в лобби!");
             return true;
@@ -53,6 +65,7 @@ public class Lobby implements CommandExecutor {
                 }
                 p.teleport(loc);
                 commandSender.sendMessage(String.format("§6Бум! И %s в лобби!", p.getName()));
+                p.sendMessage("§6Потусторонние силы телепортировали вас в лобби!");
                 return true;
             }
         }
