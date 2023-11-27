@@ -7,21 +7,19 @@ commands:
     description: Your description
     usage: /lobby {option} {option}
     permission:
-      tgeniuslobby.lobby
+      tgeniuslobby.lobby.self
     aliases: [ hub, spawn ]
 
 
 permissions:
-  tgeniuslobby.*:
-    description: Full access
+  tgeniuslobby.lobby.self:
+    description: /lobby
     children:
-      tgeniuslobby.lobby.self: true
       tgeniuslobby.lobby.others: true
       tgeniuslobby.lobby.usage_while_in_combat: false
       tgeniuslobby.lobby.set_lobby: true
       tgeniuslobby.lobby.bypass_autoteleport: false
 
-  tgeniuslobby.lobby.self:
-    description: You can /lobby only yourself
+
   tgeniuslobby.lobby.others:
     description: You can /lobby everybody yoo wand
