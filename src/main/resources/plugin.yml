@@ -25,5 +25,3 @@ permissions:
     description: You can /lobby only yourself
   tgeniuslobby.lobby.others:
     description: You can /lobby everybody yoo wand
-  tgeniuslobby.lobby.usage_while_in_combat:
-    description: Can you use the command while you are at combat

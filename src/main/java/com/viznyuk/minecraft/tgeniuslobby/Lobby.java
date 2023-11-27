@@ -30,8 +30,9 @@ public class Lobby implements CommandExecutor {
         Location loc = core.getMVWorldManager().getMVWorld(plugin.lobby_world).getSpawnLocation();
         if (strings.length == 0 & commandSender instanceof Player){
             Player p = (Player) commandSender;
+//
             if (combatLogX != null) {
-                if (!p.hasPermission("usage_while_in_combat") &
+                if (!p.hasPermission("tgeniuslobby.lobby.usage_while_in_combat") &
                         (combatLogX.getCombatManager().isInCombat(p))
                 ) {
                     commandSender.sendMessage("§4Вы не можете использовать /lobby пока находитесь в комбе!");
