@@ -1,7 +1,6 @@
 package com.viznyuk.minecraft.tgeniuslobby;
 
 
-import com.github.sirblobman.combatlogx.api.ICombatLogX;
 import com.onarandombox.MultiverseCore.MultiverseCore;
 import com.onarandombox.MultiverseCore.api.MultiverseWorld;
 import org.bukkit.Bukkit;
@@ -12,16 +11,22 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+
+import static com.viznyuk.minecraft.tgeniuslobby.TeleportCounter.teleportPlayerImmediate;
+
 
 public class Lobby implements CommandExecutor {
-    TGeniusLobby plugin;
-    ICombatLogX combatLogX;
+    private final TGeniusLobby plugin;
+
+
 
 
     Lobby(TGeniusLobby plugin) {
         this.plugin = plugin;
-        combatLogX = plugin.getICombatLogXAPI();
+        TeleportCounter.teleportCounters = new ArrayList<>();
     }
+
 
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
@@ -30,43 +35,45 @@ public class Lobby implements CommandExecutor {
         Location loc = core.getMVWorldManager().getMVWorld(plugin.lobby_world).getSpawnLocation();
         if (strings.length == 0 & commandSender instanceof Player){
             Player p = (Player) commandSender;
-//
-            if (combatLogX != null) {
-                if (!p.hasPermission("tgeniuslobby.lobby.usage_while_in_combat") &
-                        (combatLogX.getCombatManager().isInCombat(p))
-                ) {
-                    commandSender.sendMessage("§4Вы не можете использовать /lobby пока находитесь в комбе!");
-                    return true;
-                }
-            }
 
-            p.teleport(loc);
-            commandSender.sendMessage("§6Бум! И вы в лобби!");
+            if (plugin.teleport_time_seconds != 0 && !commandSender.hasPermission("tgeniuslobby.lobby.bypass_time")) {
+                if (TeleportCounter.getPlayerIndex(p) != -1) {
+                    commandSender.sendMessage(plugin.lang.getString("error-you-are-in-the-queue"));
+                    return true;
+
+                }
+                TeleportCounter counter = new TeleportCounter(p, loc);
+                counter.Run();
+                return true;
+            }
+            TeleportCounter.teleportPlayerImmediate(p, loc);
             return true;
         }
-        else if (strings.length == 2) {
+        else if (strings.length == 2 ) {
             if (strings[0].equalsIgnoreCase("set")) {
+                if (!commandSender.hasPermission("tgeniuslobby.lobby.set_lobby")) return false;
                 for (MultiverseWorld world : core.getMVWorldManager().getMVWorlds()) {
                     if (world.getName().equalsIgnoreCase(strings[1])) {
                         this.plugin.lobby_world = world.getName();
                         this.plugin.getConfig().set("lobby-world", world.getName());
                         this.plugin.saveConfig();
-                        commandSender.sendMessage(String.format("§aГотово! /lobby теперь переносит в %s!", world.getName()));
+                        commandSender.sendMessage(String.format(plugin.lang.getString("new-lobby-set"), world.getName()));
                         return true;
                     }
                 }
-                commandSender.sendMessage("Ошибка! Неверно указанно имя мира. Убедитесь, что вы добавили его в §aMultiverseCore.");
+                commandSender.sendMessage(plugin.lang.getString("error-wrong-world"));
                 return true;
             }
             if (strings[0].equalsIgnoreCase("other")) {
+                if (!commandSender.hasPermission("tgeniuslobby.lobby.others")) return false;
+
                 Player p = this.plugin.getServer().getPlayer(strings[1]);
                 if (p == null) {
-                    commandSender.sendMessage("Игрок не был найден:(");
+                    commandSender.sendMessage(plugin.lang.getString("player-was-not-found"));
                     return true;
                 }
-                p.teleport(loc);
-                commandSender.sendMessage(String.format("§6Бум! И %s в лобби!", p.getName()));
-                p.sendMessage("§6Потусторонние силы телепортировали вас в лобби!");
+                teleportPlayerImmediate(p, loc);
+                p.sendMessage(plugin.lang.getString("has-been-teleported-by-op"));
                 return true;
             }
         }

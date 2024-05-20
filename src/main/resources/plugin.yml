@@ -19,6 +19,7 @@ permissions:
       tgeniuslobby.lobby.usage_while_in_combat: false
       tgeniuslobby.lobby.set_lobby: true
       tgeniuslobby.lobby.bypass_autoteleport: false
+      tgeniuslobby.lobby.bypass_time: false
 
 
   tgeniuslobby.lobby.others:
